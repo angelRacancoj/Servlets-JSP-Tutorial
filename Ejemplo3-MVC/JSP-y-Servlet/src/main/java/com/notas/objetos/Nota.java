@@ -1,4 +1,4 @@
-package com.mycompany.notas.objetos;
+package com.notas.objetos;
 
 import java.io.Serializable;
 import java.time.LocalDate;

@@ -1,6 +1,6 @@
-package com.mycompany.notas.modelo;
+package com.notas.modelo;
 
-import com.mycompany.notas.objetos.Nota;
+import com.notas.objetos.Nota;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

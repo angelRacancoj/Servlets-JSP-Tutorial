@@ -1,6 +1,6 @@
-package com.mycompany.notas.modelo;
+package com.notas.modelo;
 
-import com.mycompany.notas.objetos.Usuario;
+import com.notas.objetos.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class UsuarioModel {
 
-    private final String BUSCAR_USUARIO = "SELECT * FROM " + Usuario.USUARIO_DB_NAME + " WHERE " + Usuario.USUARIO_ID_DB_NAME + " = ?";
-    private final String TODOS_LOS_USUARIOS = "SELECT * FROM " + Usuario.USUARIO_DB_NAME;
-    private final String USUARIOS_POR_NOMBRE = "SELECT * FROM " + Usuario.USUARIO_DB_NAME + " WHERE " + Usuario.NOMBRE_DB_NAME + " LIKE ?";
-    private final String CREAR_USUARIO = "INSERT INTO " + Usuario.USUARIO_DB_NAME + " (" + Usuario.NOMBRE_DB_NAME + "," + Usuario.PROFESION_DB_NAME + "," + Usuario.PASSWORD_DB_NAME + ")";
+    private final String USUARIOS = "SELECT * FROM " + Usuario.USUARIO_DB_NAME;
+    private final String BUSCAR_USUARIO = USUARIOS + " WHERE " + Usuario.USUARIO_ID_DB_NAME + " = ? LIMIT 1";
+    private final String USUARIOS_POR_NOMBRE = USUARIOS + " WHERE " + Usuario.NOMBRE_DB_NAME + " LIKE ?";
+    private final String CREAR_USUARIO = "INSERT INTO " + Usuario.USUARIO_DB_NAME + " (" + Usuario.NOMBRE_DB_NAME + "," + Usuario.PROFESION_DB_NAME + "," + Usuario.PASSWORD_DB_NAME + ") VALUES (?,?,?)";
 
     private static Connection connection = ConnectionDB.getInstance();
 
@@ -30,7 +30,7 @@ public class UsuarioModel {
      * @return
      * @throws SQLException
      */
-    public long agregarNota(Usuario usuario) throws SQLException {
+    public long agregarUsuario(Usuario usuario) throws SQLException {
         PreparedStatement preSt = connection.prepareStatement(CREAR_USUARIO, Statement.RETURN_GENERATED_KEYS);
 
         preSt.setString(1, usuario.getNombre());
@@ -54,7 +54,7 @@ public class UsuarioModel {
      * @throws SQLException
      */
     public List<Usuario> todosLosUsuarios() throws SQLException {
-        PreparedStatement preSt = connection.prepareStatement(TODOS_LOS_USUARIOS);
+        PreparedStatement preSt = connection.prepareStatement(USUARIOS);
         ResultSet result = preSt.executeQuery();
 
         List<Usuario> usuario = new LinkedList<>();
@@ -67,6 +67,7 @@ public class UsuarioModel {
                     result.getString(Usuario.PASSWORD_DB_NAME)
             ));
         }
+        System.out.println("Usuarios: " + usuario.size());
         return usuario;
     }
 
@@ -80,18 +81,20 @@ public class UsuarioModel {
      */
     public Usuario obtenerUsuario(int idUsuario) throws SQLException {
         PreparedStatement preSt = connection.prepareStatement(BUSCAR_USUARIO);
-        preSt.setString(1, String.valueOf(idUsuario));
+        preSt.setInt(1, idUsuario);
         ResultSet result = preSt.executeQuery();
 
-        if (result.first()) {
-            return new Usuario(
+        Usuario usuario = null;
+
+        while (result.next()) {
+            usuario = new Usuario(
                     result.getInt(Usuario.USUARIO_ID_DB_NAME),
                     result.getString(Usuario.NOMBRE_DB_NAME),
                     result.getString(Usuario.PROFESION_DB_NAME),
                     result.getString(Usuario.PASSWORD_DB_NAME)
             );
         }
-        return null;
+        return usuario;
     }
 
     /**
@@ -118,6 +121,7 @@ public class UsuarioModel {
                     result.getString(Usuario.PASSWORD_DB_NAME)
             ));
         }
+        System.out.println("Usuarios: " + usuario.size());
         return usuario;
     }
 }
