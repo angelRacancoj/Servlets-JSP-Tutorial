@@ -9,10 +9,13 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Principal</title>
     </head>
     <body>
-        <%@ include file = "menu.jsp" %>
         <h1>Hello World!</h1>
+        <p>Ejemplo para el desarrollo de una aplicacion con Login, manteniendo la sesion del usuario</p>
+        <form method="GET" action="Login">
+            <input type="submit" value="Iniciar Sesion">
+        </form>
     </body>
 </html>

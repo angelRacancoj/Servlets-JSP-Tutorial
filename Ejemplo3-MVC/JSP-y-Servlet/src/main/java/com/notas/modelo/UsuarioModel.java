@@ -124,4 +124,20 @@ public class UsuarioModel {
         System.out.println("Usuarios: " + usuario.size());
         return usuario;
     }
+
+    /**
+     * Verify if User exist and has the correct credentials
+     *
+     * @param id
+     * @param pass
+     * @return
+     * @throws SQLException
+     */
+    public Usuario loginValidation(int id, String pass) throws SQLException {
+        Usuario user = obtenerUsuario(id);
+        if (user != null && user.getPassword().equals(pass)) {
+            return user;
+        }
+        return null;
+    }
 }

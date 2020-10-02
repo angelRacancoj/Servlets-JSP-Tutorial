@@ -19,7 +19,7 @@ public class NotaModel {
     private final String BUSCAR_NOTA = "SELECT * FROM " + Nota.NOTA_DB_NAME + " WHERE " + Nota.NOTA_ID_DB_NAME + " = ?";
     private final String TODAS_LAS_NOTA = "SELECT * FROM " + Nota.NOTA_DB_NAME;
     private final String NOTAS_USUARIO = "SELECT * FROM " + Nota.NOTA_DB_NAME + " WHERE " + Nota.ID_USUARIO_DB_NAME + " = ?";
-    private final String CREAR_NOTA = "INSERT INTO " + Nota.NOTA_DB_NAME + " (" + Nota.INFORMACION_DB_NAME + "," + Nota.FECHA_DB_NAME + "," + Nota.ID_USUARIO_DB_NAME + ")";
+    private final String CREAR_NOTA = "INSERT INTO " + Nota.NOTA_DB_NAME + " (" + Nota.INFORMACION_DB_NAME + "," + Nota.FECHA_DB_NAME + "," + Nota.ID_USUARIO_DB_NAME + ") VALUES (?,?,?)";
 
     private static Connection connection = ConnectionDB.getInstance();
 

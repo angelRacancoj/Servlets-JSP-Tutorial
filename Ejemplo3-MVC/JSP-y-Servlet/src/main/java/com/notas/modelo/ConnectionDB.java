@@ -16,7 +16,7 @@ public class ConnectionDB {
     private ConnectionDB() {
         String url = "jdbc:mysql://localhost:3306/NOTAS?useSSL=false&serverTimezone=UTC";
         String user = "root";
-        String password = "MyPass";
+        String password = "MySQL-Pass";
 
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
