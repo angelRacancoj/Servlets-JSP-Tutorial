@@ -1,6 +1,8 @@
 package com.notas.modelo;
 
+import com.notas.objetos.Nota;
 import com.notas.objetos.Usuario;
+import com.notas.objetos.UsuarioCantNotas;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +21,8 @@ public class UsuarioModel {
     private final String BUSCAR_USUARIO = USUARIOS + " WHERE " + Usuario.USUARIO_ID_DB_NAME + " = ? LIMIT 1";
     private final String USUARIOS_POR_NOMBRE = USUARIOS + " WHERE " + Usuario.NOMBRE_DB_NAME + " LIKE ?";
     private final String CREAR_USUARIO = "INSERT INTO " + Usuario.USUARIO_DB_NAME + " (" + Usuario.NOMBRE_DB_NAME + "," + Usuario.PROFESION_DB_NAME + "," + Usuario.PASSWORD_DB_NAME + ") VALUES (?,?,?)";
+    private final String NOTAS_USUARIO = "SELECT U.*, COUNT(*) AS notas FROM " + Nota.NOTA_DB_NAME + " AS N JOIN " + Usuario.USUARIO_DB_NAME
+            + " AS U ON N." + Nota.ID_USUARIO_DB_NAME + " = U." + Usuario.USUARIO_ID_DB_NAME + " GROUP BY U." + Usuario.USUARIO_ID_DB_NAME;
 
     private static Connection connection = ConnectionDB.getInstance();
 
@@ -65,6 +69,31 @@ public class UsuarioModel {
                     result.getString(Usuario.NOMBRE_DB_NAME),
                     result.getString(Usuario.PROFESION_DB_NAME),
                     result.getString(Usuario.PASSWORD_DB_NAME)
+            ));
+        }
+        System.out.println("Usuarios: " + usuario.size());
+        return usuario;
+    }
+
+    /**
+     * Obtenemos todas los usuarios almacenados en la base de datos con la
+     * cantidad de notas que tiene almacenadas en el sistema.
+     *
+     * @return
+     * @throws SQLException
+     */
+    public List<UsuarioCantNotas> cantNotasUsuarios() throws SQLException {
+        PreparedStatement preSt = connection.prepareStatement(NOTAS_USUARIO);
+        ResultSet result = preSt.executeQuery();
+
+        List<UsuarioCantNotas> usuario = new LinkedList<>();
+
+        while (result.next()) {
+            usuario.add(new UsuarioCantNotas(
+                    result.getInt(Usuario.USUARIO_ID_DB_NAME),
+                    result.getString(Usuario.NOMBRE_DB_NAME),
+                    result.getString(Usuario.PROFESION_DB_NAME),
+                    result.getInt("notas")
             ));
         }
         System.out.println("Usuarios: " + usuario.size());
