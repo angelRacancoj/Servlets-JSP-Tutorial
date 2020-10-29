@@ -1,18 +1,13 @@
-package com.notas.controlador.nota;
+package com.notas.controlador.usuario;
 
-import com.notas.modelo.NotaModel;
 import com.notas.modelo.UsuarioModel;
-import com.notas.objetos.Nota;
 import com.notas.objetos.Usuario;
-import com.sun.javafx.util.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,31 +26,27 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
  *
  * @author orlan
  */
-@WebServlet("/notasPDF")
-public class ExportarNotas extends HttpServlet {
+@WebServlet("/usuariosPDF")
+public class ExportarUsuarios extends HttpServlet {
 
     UsuarioModel usuarioModel = new UsuarioModel();
-    NotaModel notaModel = new NotaModel();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
-
             if (request.getSession().getAttribute("id") == null) {
                 response.sendRedirect(request.getContextPath() + "/Login");
             }
+
             response.setContentType("application/pdf");
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=misNotas.pdf");
-
-            System.out.println("ID user: " + ((String) request.getSession().getAttribute("id")));
-            Usuario usuario = usuarioModel.obtenerUsuario(Integer.parseInt((String) request.getSession().getAttribute("id")));
-
-            List<Nota> notasUsuario = notaModel.notasDeUsuario(usuario.getIdUsuario());
-
-            File file = new File(request.getServletContext().getRealPath("/resources/mis_notas.jrxml"));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Usuarios.pdf");
+            
+            List<Usuario> usuarios = usuarioModel.buscarPorNombre("");
+            
+            File file = new File(request.getServletContext().getRealPath("/resources/Usuarios1.jrxml"));
             JasperReport jasperReports = JasperCompileManager.compileReport(file.getAbsolutePath());
-            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(notasUsuario);
-
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(usuarios);
+            
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("nombre", "Angel");
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReports, parameters, dataSource);
@@ -63,12 +54,8 @@ public class ExportarNotas extends HttpServlet {
 
             response.getOutputStream().flush();
             response.getOutputStream().close();
-            
-        } catch (IOException | NumberFormatException | SQLException  e) {
-            System.out.println("Error: " + e.getMessage());
+        } catch (IOException | SQLException | JRException e) {
             e.printStackTrace();
-        } catch (JRException ex) {
-            ex.printStackTrace();
         }
     }
 }

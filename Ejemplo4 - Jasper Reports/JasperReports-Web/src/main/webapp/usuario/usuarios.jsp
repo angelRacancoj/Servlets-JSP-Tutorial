@@ -32,5 +32,9 @@
                 </c:forEach>
             </table>
         </form>
+        
+        <form method="GET" action="usuariosPDF">
+            <input type="submit" value="Exportar Usuarios"/>
+        </form>
     </body>
 </html>
